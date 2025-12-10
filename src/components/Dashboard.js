@@ -1,12 +1,12 @@
 import React from 'react';
-import { logOut } from '../services/authService';
+import { logout } from '../services/authService';
 import './Dashboard.css';
 
-const Dashboard = ({ user }) => {
+const Dashboard = ({ user, onLogout }) => {
   const handleLogout = async () => {
-    const result = await logOut();
-    if (!result.success) {
-      console.error('Logout failed:', result.error);
+    const result = await logout();
+    if (result.success && onLogout) {
+      onLogout();
     }
   };
 
@@ -22,43 +22,51 @@ const Dashboard = ({ user }) => {
 
         <div className="user-profile">
           <div className="profile-avatar">
-            {user.photoURL ? (
-              <img src={user.photoURL} alt={user.displayName} />
-            ) : (
-              <div className="avatar-placeholder">
-                {user.displayName ? user.displayName.charAt(0).toUpperCase() : '?'}
-              </div>
-            )}
+            <div className="avatar-placeholder">
+              {user.fullname ? user.fullname.charAt(0).toUpperCase() : '?'}
+            </div>
           </div>
 
           <div className="profile-info">
-            <h2>{user.displayName || 'Người dùng'}</h2>
-            <p className="user-email">{user.email}</p>
-            <p className="user-id">ID: {user.uid}</p>
+            <h2>{user.fullname || 'Người dùng'}</h2>
+            <p className="user-type">
+              {user.customerType === 'personal' ? '📱 Cá nhân' : '🏢 Doanh nghiệp'}
+            </p>
+            <p className="user-id">ID: {user._id}</p>
           </div>
         </div>
 
         <div className="dashboard-content">
           <div className="welcome-message">
             <h3>🎉 Đăng nhập thành công!</h3>
-            <p>Bạn đã đăng nhập thành công bằng tài khoản Google.</p>
+            <p>Bạn đã đăng nhập thành công vào hệ thống.</p>
           </div>
 
           <div className="info-card">
             <h4>Thông tin tài khoản</h4>
             <div className="info-grid">
               <div className="info-item">
-                <span className="info-label">Tên hiển thị:</span>
-                <span className="info-value">{user.displayName || 'Chưa cập nhật'}</span>
+                <span className="info-label">Họ tên:</span>
+                <span className="info-value">{user.fullname || 'Chưa cập nhật'}</span>
               </div>
               <div className="info-item">
-                <span className="info-label">Email:</span>
-                <span className="info-value">{user.email}</span>
+                <span className="info-label">Loại tài khoản:</span>
+                <span className="info-value">
+                  {user.customerType === 'personal' ? 'Cá nhân' : 'Doanh nghiệp'}
+                </span>
               </div>
               <div className="info-item">
                 <span className="info-label">User ID:</span>
-                <span className="info-value">{user.uid}</span>
+                <span className="info-value">{user._id}</span>
               </div>
+              {user.twofa && (
+                <div className="info-item">
+                  <span className="info-label">Xác thực 2 lớp:</span>
+                  <span className="info-value">
+                    {user.twofa.isEnabled ? '✅ Đã bật' : '❌ Chưa bật'}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>

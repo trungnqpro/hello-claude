@@ -1,19 +1,22 @@
-# Hello Claude - Firebase Google Authentication
+# Hello Claude - Auction API Authentication
 
-Ứng dụng React đơn giản với chức năng đăng nhập bằng Google sử dụng Firebase Authentication.
+Ứng dụng React đơn giản với chức năng đăng nhập bằng REST API (Auction API v2).
 
 ## Tính năng
 
-- ✅ Đăng nhập với Google (Firebase Authentication)
-- ✅ Quản lý trạng thái đăng nhập
+- ✅ Đăng nhập với username/password
+- ✅ JWT token authentication (access token + refresh token)
+- ✅ Quản lý trạng thái đăng nhập với localStorage
 - ✅ Hiển thị thông tin người dùng
 - ✅ Đăng xuất
+- ✅ Hỗ trợ 2 loại tài khoản: Cá nhân & Doanh nghiệp
 - ✅ Giao diện đẹp, responsive
 
 ## Công nghệ sử dụng
 
 - React 18
-- Firebase 10 (Authentication)
+- REST API (Fetch API)
+- JWT Authentication
 - Webpack 5
 - Babel
 
@@ -25,40 +28,23 @@
 npm install
 ```
 
-### 2. Cấu hình Firebase
+### 2. Cấu hình (Optional)
 
-1. Truy cập [Firebase Console](https://console.firebase.google.com/)
-2. Tạo project mới hoặc chọn project có sẵn
-3. Vào **Project Settings** > **General** > **Your apps**
-4. Chọn **Web app** và sao chép Firebase configuration
-5. Mở file `src/firebase/config.js` và thay thế các giá trị sau:
+Nếu muốn thay đổi API base URL, tạo file `.env`:
 
-```javascript
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+```bash
+cp .env.example .env
 ```
 
-### 3. Bật Google Authentication trong Firebase
+Sau đó chỉnh sửa trong file `.env`:
 
-1. Trong Firebase Console, vào **Authentication** > **Sign-in method**
-2. Click vào **Google** và bật tính năng này
-3. Nhập email hỗ trợ project
-4. Click **Save**
+```env
+REACT_APP_API_BASE_URL=https://stg-auction-api-v2.famtechvn.com
+```
 
-### 4. Cấu hình Authorized domains
+### 3. Chạy ứng dụng
 
-1. Trong **Authentication** > **Settings** > **Authorized domains**
-2. Thêm domain của bạn (ví dụ: `localhost` đã có sẵn cho development)
-
-## Chạy ứng dụng
-
-### Development mode
+#### Development mode
 
 ```bash
 npm start
@@ -66,7 +52,7 @@ npm start
 
 Ứng dụng sẽ chạy tại `http://localhost:3000`
 
-### Production build
+#### Production build
 
 ```bash
 npm run build
@@ -86,8 +72,8 @@ hello-claude/
 │   │   ├── Login.css
 │   │   ├── Dashboard.js     # Component dashboard sau khi đăng nhập
 │   │   └── Dashboard.css
-│   ├── firebase/
-│   │   └── config.js        # Cấu hình Firebase
+│   ├── config/
+│   │   └── api.js           # API configuration & constants
 │   ├── services/
 │   │   └── authService.js   # Service xử lý authentication
 │   ├── App.js               # Component chính
@@ -98,41 +84,110 @@ hello-claude/
 └── README.md
 ```
 
-## Các chức năng chính
+## API Integration
 
-### AuthService (`src/services/authService.js`)
+### Endpoint được sử dụng
 
-- `signInWithGoogle()` - Đăng nhập với Google (popup)
-- `signInWithGoogleRedirect()` - Đăng nhập với Google (redirect, tốt cho mobile)
-- `logOut()` - Đăng xuất
-- `onAuthChange(callback)` - Subscribe thay đổi trạng thái authentication
+#### Login
+```
+POST /auth/login
+```
+
+**Request Body:**
+```json
+{
+  "customerType": "personal",
+  "username": "0393510439",
+  "password": "12345678Aa@",
+  "deviceId": "auto_generated",
+  "reCaptchaToken": "a",
+  "deviceToken": "auto_generated"
+}
+```
+
+**Response:**
+```json
+{
+  "data": {
+    "profile": {
+      "_id": "user_id",
+      "customerType": "personal",
+      "fullname": "Tên người dùng",
+      "twofa": {
+        "isEnabled": false
+      }
+    },
+    "accessToken": "jwt_access_token",
+    "refreshToken": "jwt_refresh_token"
+  }
+}
+```
+
+### Auth Service (`src/services/authService.js`)
+
+**Các hàm chính:**
+
+- `login({ username, password, customerType })` - Đăng nhập
+- `logout()` - Đăng xuất
+- `refreshAccessToken()` - Làm mới access token
 - `getCurrentUser()` - Lấy thông tin user hiện tại
+- `isAuthenticated()` - Kiểm tra trạng thái đăng nhập
+
+**Token Management:**
+- `getAccessToken()` - Lấy access token
+- `getRefreshToken()` - Lấy refresh token
+- `getUserProfile()` - Lấy profile từ localStorage
+- `clearAuthData()` - Xóa toàn bộ auth data
 
 ### Components
 
 #### Login Component
-- Hiển thị nút đăng nhập Google
-- Xử lý loading state
-- Hiển thị error messages
+- Form đăng nhập với username/password
+- Chọn loại tài khoản (Cá nhân/Doanh nghiệp)
+- Validation & error handling
+- Loading states
 
 #### Dashboard Component
-- Hiển thị thông tin người dùng sau khi đăng nhập
-- Cho phép đăng xuất
+- Hiển thị thông tin người dùng
+- Hiển thị trạng thái 2FA
+- Nút đăng xuất
 - Responsive design
 
 ## Xử lý lỗi
 
 Các lỗi phổ biến:
 
-1. **Firebase configuration error**: Kiểm tra lại config trong `src/firebase/config.js`
-2. **Google Sign-in not enabled**: Bật Google provider trong Firebase Console
-3. **Unauthorized domain**: Thêm domain vào Authorized domains trong Firebase
+1. **401 Unauthorized**: Username/password không đúng
+2. **Network Error**: Không thể kết nối đến API
+3. **Token Expired**: Access token hết hạn (cần implement refresh token logic)
 
 ## Bảo mật
 
-- Không commit file `.env` hoặc Firebase config có chứa thông tin nhạy cảm lên repository public
-- Sử dụng Firebase Security Rules để bảo vệ dữ liệu
-- Cấu hình CORS và Authorized domains đúng cách
+- Tokens được lưu trong localStorage
+- Device ID được tự động generate và lưu trữ
+- Support cho refresh token
+- TODO: Implement reCaptcha thực tế (hiện tại dùng giá trị giả)
+
+## Tài khoản test
+
+Bạn có thể sử dụng thông tin sau để test (nếu có):
+
+```
+Username: 0393510439
+Password: 12345678Aa@
+Customer Type: personal
+```
+
+## TODO / Improvements
+
+- [ ] Implement real reCaptcha integration
+- [ ] Auto refresh token khi access token hết hạn
+- [ ] Remember me functionality
+- [ ] Forgot password flow
+- [ ] Registration flow
+- [ ] Better error messages from API
+- [ ] Loading skeleton screens
+- [ ] Toast notifications
 
 ## License
 

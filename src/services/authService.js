@@ -1,118 +1,214 @@
-import {
-  signInWithPopup,
-  signInWithRedirect,
-  signOut,
-  onAuthStateChanged
-} from 'firebase/auth';
-import { auth, googleProvider } from '../firebase/config';
+import { API_CONFIG, STORAGE_KEYS, CUSTOMER_TYPES, getOrCreateDeviceId } from '../config/api';
 
 /**
- * Sign in with Google using popup
- * @returns {Promise} Promise with user credentials
+ * Make API request with proper headers
+ * @param {string} endpoint - API endpoint
+ * @param {object} options - Fetch options
+ * @returns {Promise} API response
  */
-export const signInWithGoogle = async () => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    // The signed-in user info
-    const user = result.user;
+const apiRequest = async (endpoint, options = {}) => {
+  const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+  const token = getAccessToken();
 
-    // You can also get the Google Access Token
-    // const credential = GoogleAuthProvider.credentialFromResult(result);
-    // const token = credential.accessToken;
+  const defaultHeaders = {
+    'Content-Type': 'application/json',
+  };
 
-    return {
-      success: true,
-      user: {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL
-      }
-    };
-  } catch (error) {
-    console.error('Error signing in with Google:', error);
-    return {
-      success: false,
-      error: {
-        code: error.code,
-        message: error.message
-      }
-    };
+  if (token) {
+    defaultHeaders['Authorization'] = `Bearer ${token}`;
   }
-};
 
-/**
- * Sign in with Google using redirect (better for mobile)
- * Note: Need to handle redirect result in app initialization
- */
-export const signInWithGoogleRedirect = async () => {
+  const config = {
+    ...options,
+    headers: {
+      ...defaultHeaders,
+      ...options.headers,
+    },
+  };
+
   try {
-    await signInWithRedirect(auth, googleProvider);
+    const response = await fetch(url, config);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw {
+        status: response.status,
+        message: data.message || 'Request failed',
+        data: data
+      };
+    }
+
+    return data;
   } catch (error) {
-    console.error('Error initiating Google redirect:', error);
+    console.error('API Request Error:', error);
     throw error;
   }
 };
 
 /**
- * Sign out current user
- * @returns {Promise} Promise with sign out result
+ * Login with username and password
+ * @param {object} credentials - Login credentials
+ * @param {string} credentials.username - Username (phone number)
+ * @param {string} credentials.password - Password
+ * @param {string} credentials.customerType - Customer type (personal/business)
+ * @returns {Promise} Login result with tokens and profile
  */
-export const logOut = async () => {
+export const login = async ({ username, password, customerType = CUSTOMER_TYPES.PERSONAL }) => {
   try {
-    await signOut(auth);
-    return { success: true };
-  } catch (error) {
-    console.error('Error signing out:', error);
+    const deviceId = getOrCreateDeviceId();
+
+    const response = await apiRequest(API_CONFIG.ENDPOINTS.LOGIN, {
+      method: 'POST',
+      body: JSON.stringify({
+        customerType,
+        username,
+        password,
+        deviceId,
+        reCaptchaToken: 'a', // TODO: Implement real reCaptcha
+        deviceToken: deviceId // Using deviceId as deviceToken for now
+      })
+    });
+
+    if (response.data) {
+      // Save tokens and profile to localStorage
+      setAccessToken(response.data.accessToken);
+      setRefreshToken(response.data.refreshToken);
+      setUserProfile(response.data.profile);
+
+      return {
+        success: true,
+        data: {
+          profile: response.data.profile,
+          accessToken: response.data.accessToken,
+          refreshToken: response.data.refreshToken
+        }
+      };
+    }
+
     return {
       success: false,
       error: {
-        code: error.code,
-        message: error.message
+        message: 'Login failed - no data received'
+      }
+    };
+  } catch (error) {
+    console.error('Login error:', error);
+    return {
+      success: false,
+      error: {
+        message: error.message || 'Đăng nhập thất bại',
+        status: error.status,
+        data: error.data
       }
     };
   }
 };
 
 /**
- * Subscribe to authentication state changes
- * @param {Function} callback - Callback function to handle auth state changes
- * @returns {Function} Unsubscribe function
+ * Logout current user
+ * @returns {Promise} Logout result
  */
-export const onAuthChange = (callback) => {
-  return onAuthStateChanged(auth, (user) => {
-    if (user) {
-      callback({
-        isAuthenticated: true,
-        user: {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL
-        }
-      });
-    } else {
-      callback({
-        isAuthenticated: false,
-        user: null
-      });
-    }
-  });
+export const logout = async () => {
+  try {
+    // Optional: Call logout API if available
+    // await apiRequest(API_CONFIG.ENDPOINTS.LOGOUT, { method: 'POST' });
+
+    // Clear all auth data
+    clearAuthData();
+
+    return { success: true };
+  } catch (error) {
+    console.error('Logout error:', error);
+    // Clear data even if API call fails
+    clearAuthData();
+    return { success: true };
+  }
 };
 
 /**
- * Get current user
- * @returns {Object|null} Current user object or null
+ * Refresh access token
+ * @returns {Promise} New tokens
+ */
+export const refreshAccessToken = async () => {
+  try {
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    const response = await apiRequest(API_CONFIG.ENDPOINTS.REFRESH_TOKEN, {
+      method: 'POST',
+      body: JSON.stringify({ refreshToken })
+    });
+
+    if (response.data) {
+      setAccessToken(response.data.accessToken);
+      if (response.data.refreshToken) {
+        setRefreshToken(response.data.refreshToken);
+      }
+      return {
+        success: true,
+        data: response.data
+      };
+    }
+
+    return { success: false };
+  } catch (error) {
+    console.error('Refresh token error:', error);
+    clearAuthData();
+    return { success: false, error };
+  }
+};
+
+/**
+ * Get current user profile
+ * @returns {object|null} User profile or null
  */
 export const getCurrentUser = () => {
-  const user = auth.currentUser;
-  if (user) {
-    return {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL
-    };
-  }
-  return null;
+  return getUserProfile();
+};
+
+/**
+ * Check if user is authenticated
+ * @returns {boolean} Authentication status
+ */
+export const isAuthenticated = () => {
+  const token = getAccessToken();
+  const profile = getUserProfile();
+  return !!(token && profile);
+};
+
+// ============================================
+// Token Management Functions
+// ============================================
+
+export const getAccessToken = () => {
+  return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+};
+
+export const setAccessToken = (token) => {
+  localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, token);
+};
+
+export const getRefreshToken = () => {
+  return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+};
+
+export const setRefreshToken = (token) => {
+  localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, token);
+};
+
+export const getUserProfile = () => {
+  const profile = localStorage.getItem(STORAGE_KEYS.USER_PROFILE);
+  return profile ? JSON.parse(profile) : null;
+};
+
+export const setUserProfile = (profile) => {
+  localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(profile));
+};
+
+export const clearAuthData = () => {
+  localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+  localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+  localStorage.removeItem(STORAGE_KEYS.USER_PROFILE);
 };
