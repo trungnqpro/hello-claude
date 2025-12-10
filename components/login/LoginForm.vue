@@ -1,12 +1,12 @@
 <template>
-  <div class="bg-white rounded-2xl shadow-xl p-8 lg:p-10 w-full max-w-md">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Đăng nhập</h2>
+  <div class="bg-white rounded-2xl shadow-xl p-8 lg:p-12 w-full max-w-md">
+    <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">Đăng nhập</h2>
 
     <!-- Tab Switch -->
-    <LoginTabSwitch v-model="activeTab" :tabs="tabs" class="mb-6" />
+    <LoginTabSwitch v-model="activeTab" :tabs="tabs" class="mb-8" />
 
     <!-- Login Form -->
-    <form @submit.prevent="handleSubmit" class="space-y-4">
+    <form @submit.prevent="handleSubmit" class="space-y-5">
       <!-- Email/Phone Input -->
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
@@ -18,7 +18,7 @@
             v-model="formData.email"
             type="text"
             placeholder="Nhập số điện thoại hoặc email"
-            class="input-field pl-10"
+            class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-vna-green focus:border-transparent transition-all"
             required
           />
           <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -45,7 +45,7 @@
             v-model="formData.password"
             :type="showPassword ? 'text' : 'password'"
             placeholder="Nhập mật khẩu"
-            class="input-field pr-10"
+            class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-vna-green focus:border-transparent transition-all"
             required
           />
           <button
@@ -80,7 +80,7 @@
       </div>
 
       <!-- Forgot Password Link -->
-      <div class="flex items-center justify-between text-sm">
+      <div class="flex items-center justify-between text-sm pt-1">
         <a href="#" class="text-gray-600 hover:text-gray-800 transition-colors">
           Quên mật khẩu?
         </a>
@@ -90,13 +90,13 @@
       </div>
 
       <!-- Login Button -->
-      <button type="submit" class="btn-primary w-full">
+      <button type="submit" class="w-full bg-vna-green hover:bg-vna-green-hover text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 mt-6">
         Đăng nhập
       </button>
     </form>
 
     <!-- Social Login -->
-    <div class="mt-6">
+    <div class="mt-8">
       <LoginSocialLogin
         @google-login="handleGoogleLogin"
         @vneid-login="handleVNeidLogin"

@@ -1,13 +1,15 @@
 <template>
-  <div class="bg-gray-100 rounded-lg p-1 flex gap-1">
+  <div class="flex border-b border-gray-200">
     <button
       v-for="tab in tabs"
       :key="tab.value"
       type="button"
       @click="$emit('update:modelValue', tab.value)"
       :class="[
-        'tab-button',
-        modelValue === tab.value ? 'tab-button-active' : 'tab-button-inactive'
+        'flex-1 py-3 px-4 text-sm font-medium transition-all duration-200',
+        modelValue === tab.value
+          ? 'text-gray-900 border-b-2 border-gray-900'
+          : 'text-gray-500 border-b-2 border-transparent hover:text-gray-700'
       ]"
     >
       <div class="flex items-center justify-center gap-2">
