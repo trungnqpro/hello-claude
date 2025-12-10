@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-3">
+  <div class="space-y-4">
     <div class="relative">
       <div class="absolute inset-0 flex items-center">
         <div class="w-full border-t border-gray-200"></div>
@@ -14,7 +14,7 @@
       <button
         type="button"
         @click="$emit('google-login')"
-        class="flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium text-gray-700"
+        class="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-gray-700"
       >
         <svg class="w-5 h-5" viewBox="0 0 24 24">
           <path
@@ -41,7 +41,7 @@
       <button
         type="button"
         @click="$emit('vneid-login')"
-        class="flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium text-gray-700"
+        class="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-gray-700"
       >
         <div class="w-5 h-5 flex items-center justify-center">
           <svg viewBox="0 0 24 24" class="w-full h-full">

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-100 flex items-center justify-center p-4 lg:p-8">
+  <div class="min-h-screen bg-gray-50 flex items-center justify-center p-4 lg:p-8">
     <div class="w-full max-w-7xl">
       <!-- Top header - visible on mobile -->
       <div class="lg:hidden mb-6">
@@ -7,7 +7,7 @@
       </div>
 
       <!-- Main Content -->
-      <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
         <div class="grid lg:grid-cols-2 gap-0">
           <!-- Left Side - Illustration -->
           <div class="hidden lg:block">
@@ -15,10 +15,10 @@
           </div>
 
           <!-- Right Side - Login Form -->
-          <div class="flex items-center justify-center p-6 lg:p-12">
+          <div class="flex items-center justify-center p-8 lg:p-12">
             <div class="w-full max-w-md">
               <!-- Header for desktop - matches the screenshot layout -->
-              <div class="mb-6 text-center lg:text-left">
+              <div class="mb-4 text-right">
                 <p class="text-sm text-gray-500">Sign in / Đăng nhập</p>
               </div>
 

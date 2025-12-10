@@ -12,10 +12,7 @@
           : 'text-gray-500 border-b-2 border-transparent hover:text-gray-700'
       ]"
     >
-      <div class="flex items-center justify-center gap-2">
-        <component :is="tab.icon" class="w-4 h-4" />
-        <span>{{ tab.label }}</span>
-      </div>
+      <span>{{ tab.label }}</span>
     </button>
   </div>
 </template>

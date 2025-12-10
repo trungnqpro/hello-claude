@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-2xl shadow-xl p-8 lg:p-12 w-full max-w-md">
+  <div class="w-full max-w-md">
     <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">Đăng nhập</h2>
 
     <!-- Tab Switch -->
@@ -13,14 +13,6 @@
           Số điện thoại/Email
         </label>
         <div class="relative">
-          <input
-            id="email"
-            v-model="formData.email"
-            type="text"
-            placeholder="Nhập số điện thoại hoặc email"
-            class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-vna-green focus:border-transparent transition-all"
-            required
-          />
           <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -31,6 +23,14 @@
               />
             </svg>
           </div>
+          <input
+            id="email"
+            v-model="formData.email"
+            type="text"
+            placeholder="Nhập số điện thoại hoặc email"
+            class="input-field pl-11"
+            required
+          />
         </div>
       </div>
 
@@ -44,8 +44,8 @@
             id="password"
             v-model="formData.password"
             :type="showPassword ? 'text' : 'password'"
-            placeholder="Nhập mật khẩu"
-            class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-vna-green focus:border-transparent transition-all"
+            placeholder="••••••••"
+            class="input-field pr-11"
             required
           />
           <button
@@ -79,18 +79,18 @@
         </div>
       </div>
 
-      <!-- Forgot Password Link -->
+      <!-- Forgot Password & Register Links -->
       <div class="flex items-center justify-between text-sm pt-1">
         <a href="#" class="text-gray-600 hover:text-gray-800 transition-colors">
           Quên mật khẩu?
         </a>
-        <a href="#" class="text-vna-green hover:text-vna-green-hover font-medium transition-colors">
-          Chưa có tài khoản? <span class="underline">Đăng ký</span>
+        <a href="#" class="text-vna-green hover:text-vna-green-hover transition-colors">
+          Chưa có tài khoản? <span class="underline font-medium">Đăng ký</span>
         </a>
       </div>
 
       <!-- Login Button -->
-      <button type="submit" class="w-full bg-vna-green hover:bg-vna-green-hover text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 mt-6">
+      <button type="submit" class="btn-primary mt-6">
         Đăng nhập
       </button>
     </form>
