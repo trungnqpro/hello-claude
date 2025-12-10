@@ -96,7 +96,7 @@
     </form>
 
     <!-- Social Login -->
-    <div class="mt-6">
+    <div class="mt-8">
       <LoginSocialLogin
         @google-login="handleGoogleLogin"
         @vneid-login="handleVNeidLogin"

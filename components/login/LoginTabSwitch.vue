@@ -6,8 +6,10 @@
       type="button"
       @click="$emit('update:modelValue', tab.value)"
       :class="[
-        'tab-button',
-        modelValue === tab.value ? 'tab-button-active' : 'tab-button-inactive'
+        'flex-1 py-3 px-4 text-sm font-medium transition-all duration-200',
+        modelValue === tab.value
+          ? 'text-gray-900 border-b-2 border-gray-900'
+          : 'text-gray-500 border-b-2 border-transparent hover:text-gray-700'
       ]"
     >
       <span>{{ tab.label }}</span>
