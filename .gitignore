@@ -30,3 +30,6 @@ logs
 *.njsproj
 *.sln
 *.sw?
+
+# Figma data (large files)
+figma-data/
