@@ -1,15 +1,15 @@
 <template>
-  <div class="flex border-b border-gray-200">
+  <div class="bg-gray-100 rounded-lg p-1 flex gap-1">
     <button
       v-for="tab in tabs"
       :key="tab.value"
       type="button"
       @click="$emit('update:modelValue', tab.value)"
       :class="[
-        'flex-1 py-3 px-4 text-sm font-medium transition-all duration-200',
+        'flex-1 py-2.5 px-4 text-sm font-medium transition-all duration-200 rounded-md',
         modelValue === tab.value
-          ? 'text-gray-900 border-b-2 border-gray-900'
-          : 'text-gray-500 border-b-2 border-transparent hover:text-gray-700'
+          ? 'bg-white text-gray-900 shadow-sm'
+          : 'text-gray-600 hover:text-gray-900'
       ]"
     >
       <span>{{ tab.label }}</span>

@@ -7,12 +7,20 @@
 
     <!-- Login Form -->
     <form @submit.prevent="handleSubmit" class="space-y-5">
-      <!-- Email/Phone Input -->
+      <!-- Email/Phone/Tax ID Input -->
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-          Số điện thoại/Email
+          {{ activeTab === 'individual' ? 'Số điện thoại/Email' : 'Mã số thuế' }}
         </label>
         <div class="relative">
+          <input
+            id="email"
+            v-model="formData.email"
+            type="text"
+            :placeholder="activeTab === 'individual' ? 'Nhập số điện thoại hoặc email' : 'Nhập mã số thuế'"
+            class="w-full px-4 py-3 pl-10 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-vna-green focus:border-transparent focus:bg-white transition-all placeholder:text-gray-400"
+            required
+          />
           <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -23,14 +31,6 @@
               />
             </svg>
           </div>
-          <input
-            id="email"
-            v-model="formData.email"
-            type="text"
-            placeholder="Nhập số điện thoại hoặc email"
-            class="input-field pl-11"
-            required
-          />
         </div>
       </div>
 
@@ -44,8 +44,8 @@
             id="password"
             v-model="formData.password"
             :type="showPassword ? 'text' : 'password'"
-            placeholder="••••••••"
-            class="input-field pr-11"
+            placeholder="Nhập mật khẩu"
+            class="w-full px-4 py-3 pr-10 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-vna-green focus:border-transparent focus:bg-white transition-all placeholder:text-gray-400"
             required
           />
           <button
