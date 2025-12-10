@@ -31,5 +31,7 @@ logs
 *.sln
 *.sw?
 
-# Figma data (large files)
-figma-data/
+# Figma data (large files, but keep README)
+figma-data/*
+!figma-data/README.md
+!figma-data/.gitkeep
