@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-100 rounded-lg p-1 flex gap-1">
+  <div class="flex border-b border-gray-200">
     <button
       v-for="tab in tabs"
       :key="tab.value"
@@ -10,10 +10,7 @@
         modelValue === tab.value ? 'tab-button-active' : 'tab-button-inactive'
       ]"
     >
-      <div class="flex items-center justify-center gap-2">
-        <component :is="tab.icon" class="w-4 h-4" />
-        <span>{{ tab.label }}</span>
-      </div>
+      <span>{{ tab.label }}</span>
     </button>
   </div>
 </template>

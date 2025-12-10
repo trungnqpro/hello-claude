@@ -1,26 +1,18 @@
 <template>
-  <div class="bg-white rounded-2xl shadow-xl p-8 lg:p-10 w-full max-w-md">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Đăng nhập</h2>
+  <div class="w-full max-w-md">
+    <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">Đăng nhập</h2>
 
     <!-- Tab Switch -->
-    <LoginTabSwitch v-model="activeTab" :tabs="tabs" class="mb-6" />
+    <LoginTabSwitch v-model="activeTab" :tabs="tabs" class="mb-8" />
 
     <!-- Login Form -->
-    <form @submit.prevent="handleSubmit" class="space-y-4">
+    <form @submit.prevent="handleSubmit" class="space-y-5">
       <!-- Email/Phone Input -->
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
           Số điện thoại/Email
         </label>
         <div class="relative">
-          <input
-            id="email"
-            v-model="formData.email"
-            type="text"
-            placeholder="Nhập số điện thoại hoặc email"
-            class="input-field pl-10"
-            required
-          />
           <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -31,6 +23,14 @@
               />
             </svg>
           </div>
+          <input
+            id="email"
+            v-model="formData.email"
+            type="text"
+            placeholder="Nhập số điện thoại hoặc email"
+            class="input-field pl-11"
+            required
+          />
         </div>
       </div>
 
@@ -44,8 +44,8 @@
             id="password"
             v-model="formData.password"
             :type="showPassword ? 'text' : 'password'"
-            placeholder="Nhập mật khẩu"
-            class="input-field pr-10"
+            placeholder="••••••••"
+            class="input-field pr-11"
             required
           />
           <button
@@ -79,18 +79,18 @@
         </div>
       </div>
 
-      <!-- Forgot Password Link -->
-      <div class="flex items-center justify-between text-sm">
+      <!-- Forgot Password & Register Links -->
+      <div class="flex items-center justify-between text-sm pt-1">
         <a href="#" class="text-gray-600 hover:text-gray-800 transition-colors">
           Quên mật khẩu?
         </a>
-        <a href="#" class="text-vna-green hover:text-vna-green-hover font-medium transition-colors">
-          Chưa có tài khoản? <span class="underline">Đăng ký</span>
+        <a href="#" class="text-vna-green hover:text-vna-green-hover transition-colors">
+          Chưa có tài khoản? <span class="underline font-medium">Đăng ký</span>
         </a>
       </div>
 
       <!-- Login Button -->
-      <button type="submit" class="btn-primary w-full">
+      <button type="submit" class="btn-primary mt-6">
         Đăng nhập
       </button>
     </form>

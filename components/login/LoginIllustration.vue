@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-vna-light-green rounded-2xl p-8 lg:p-12 flex flex-col items-center justify-center h-full min-h-[600px]">
+  <div class="bg-vna-light-green p-8 lg:p-12 flex flex-col items-center justify-center h-full min-h-[600px]">
     <!-- VNA Logo -->
-    <div class="mb-8">
+    <div class="mb-6">
       <div class="flex items-center gap-2">
-        <div class="w-10 h-10 bg-vna-green rounded-full flex items-center justify-center">
-          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+        <div class="w-12 h-12 bg-vna-green rounded-full flex items-center justify-center">
+          <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
           </svg>
         </div>
         <span class="text-2xl font-bold text-vna-green">VNA</span>
@@ -13,12 +13,12 @@
     </div>
 
     <!-- Heading -->
-    <h1 class="text-2xl lg:text-3xl font-bold text-center text-gray-800 mb-2">
+    <h1 class="text-xl lg:text-2xl font-bold text-center text-gray-800 mb-2">
       Nền tảng đấu giá trực tuyến VNA
     </h1>
 
     <!-- Subheading -->
-    <p class="text-gray-600 text-center mb-12">
+    <p class="text-gray-600 text-center text-sm mb-10">
       Tham gia dễ dàng, sở hữu nhanh chóng!
     </p>
 
