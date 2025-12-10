@@ -11,6 +11,32 @@ import * as path from 'path'
 const FIGMA_URL = process.env.FIGMA_URL || 'https://www.figma.com/design/YOUR_FILE_KEY/YOUR_FILE_NAME?node-id=YOUR_NODE_ID'
 const FIGMA_TOKEN = process.env.FIGMA_TOKEN || 'YOUR_FIGMA_PERSONAL_ACCESS_TOKEN'
 
+/**
+ * Generate a Vue component from SVG content
+ */
+function generateVueComponent(svgContent: string, componentName: string): string {
+  // Clean up component name to be valid
+  const cleanName = componentName
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .replace(/^[0-9]/, 'Component$&')
+
+  return `<template>
+  ${svgContent}
+</template>
+
+<script setup lang="ts">
+/**
+ * ${componentName} - Inline SVG component exported from Figma
+ * This component uses inline SVG to avoid external image loading issues
+ */
+</script>
+
+<style scoped>
+/* Add any component-specific styles here */
+</style>
+`
+}
+
 async function main() {
   console.log('🎨 Fetching Figma design data...\n')
 
@@ -56,19 +82,41 @@ async function main() {
       fs.writeFileSync(nodeDataPath, JSON.stringify(nodeData, null, 2))
       console.log(`💾 Node data saved to: ${nodeDataPath}\n`)
 
-      // Fetch images for the node
-      console.log(`⏳ Fetching images for node...`)
-      const images = await figma.getImages([formattedNodeId], 'png', 2)
-      console.log(`✅ Image URLs fetched\n`)
+      // Fetch SVG images for the node
+      console.log(`⏳ Fetching SVG images for node...`)
+      const images = await figma.getImages([formattedNodeId], 'svg')
+      console.log(`✅ SVG URLs fetched\n`)
 
       // Save image URLs
       const imagesPath = path.join(outputDir, 'images.json')
       fs.writeFileSync(imagesPath, JSON.stringify(images, null, 2))
-      console.log(`💾 Image URLs saved to: ${imagesPath}\n`)
+      console.log(`💾 SVG URLs saved to: ${imagesPath}\n`)
 
-      // Print image URLs
+      // Download and save SVG files
       if (images.images && images.images[formattedNodeId]) {
-        console.log(`🖼️  Image URL: ${images.images[formattedNodeId]}\n`)
+        const svgUrl = images.images[formattedNodeId]
+        console.log(`🖼️  SVG URL: ${svgUrl}`)
+
+        try {
+          console.log(`⏳ Downloading SVG file...`)
+          const response = await fetch(svgUrl)
+          if (response.ok) {
+            const svgContent = await response.text()
+            const svgFilePath = path.join(outputDir, 'exported-design.svg')
+            fs.writeFileSync(svgFilePath, svgContent)
+            console.log(`✅ SVG file saved to: ${svgFilePath}\n`)
+
+            // Also create a Vue component template
+            const vueComponent = generateVueComponent(svgContent, nodeData.nodes[formattedNodeId]?.document?.name || 'FigmaDesign')
+            const vueFilePath = path.join(outputDir, 'FigmaDesign.vue')
+            fs.writeFileSync(vueFilePath, vueComponent)
+            console.log(`✅ Vue component saved to: ${vueFilePath}\n`)
+          } else {
+            console.warn(`⚠️  Failed to download SVG: ${response.statusText}`)
+          }
+        } catch (downloadError) {
+          console.error(`❌ Error downloading SVG:`, downloadError)
+        }
       }
     }
 
