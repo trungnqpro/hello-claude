@@ -30,13 +30,8 @@
 
       <!-- Footer text for mobile illustration -->
       <div class="lg:hidden mt-8 text-center">
-        <div class="inline-flex items-center gap-2 mb-2">
-          <div class="w-8 h-8 bg-vna-green rounded-full flex items-center justify-center">
-            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-            </svg>
-          </div>
-          <span class="text-xl font-bold text-vna-green">VNA</span>
+        <div class="mb-2">
+          <img src="~/assets/images/logo.png" alt="VNA Logo" class="h-12 mx-auto" />
         </div>
         <p class="text-gray-600 text-sm">Nền tảng đấu giá trực tuyến VNA</p>
         <p class="text-gray-500 text-xs">Tham gia dễ dàng, sở hữu nhanh chóng!</p>
